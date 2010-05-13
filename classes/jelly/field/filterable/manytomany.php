@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
+class Jelly_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 {
 
 	/**
@@ -47,19 +47,24 @@ class Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 		{
 			$query = Jelly::select($this->foreign['model'])
 					->where($this->foreign['column'], 'IN', $value);
+			
+			if ($this->filter !== FALSE)
+			{
+				$method = $this->filter;
+				$query->$method();
+			}
+			
+			return $query;
 		}
-		else
-		{
 
-			$join_col1 = $this->through['model'].'.'.$this->through['columns'][1];
-			$join_col2 = $this->foreign['model'].'.'.$this->foreign['column'];
-			$where_col = $this->through['model'].'.'.$this->through['columns'][0];
+		$join_col1 = $this->through['model'].'.'.$this->through['columns'][1];
+		$join_col2 = $this->foreign['model'].'.'.$this->foreign['column'];
+		$where_col = $this->through['model'].'.'.$this->through['columns'][0];
 
-			$query = Jelly::select($this->foreign['model'])
-						->join($this->through['model'])
-						->on($join_col1, '=', $join_col2)
-						->where($where_col, '=', $model->id());
-		}
+		$query = Jelly::select($this->foreign['model'])
+					->join($this->through['model'])
+					->on($join_col1, '=', $join_col2)
+					->where($where_col, '=', $model->id());
 		
 		if ($this->filter !== FALSE)
 		{
@@ -70,12 +75,12 @@ class Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 		if ($this->filter_through !== FALSE)
 		{
 			$method = $this->filter_through;
-			Jelly::builder($this->through['model'])->$method($query);
+			$query->includeCriteria(Jelly::select($this->through['model'])->table_alias($this->through['model'])->$method());
 		}
-		
+
 		return $query;
 	}
-
+	
 	/**
 	 * Returns either an array or unexecuted query to find
 	 * which columns the model is "in" in the join table
@@ -90,18 +95,6 @@ class Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 				->select($this->through['columns'][1])
 				->where($this->through['columns'][0], '=', $model->id());
 
-		if ($this->filter !== FALSE)
-		{
-			$method = $this->filter;
-			$result->$method();
-		}
-
-		if ($this->filter_through !== FALSE)
-		{
-			$method = $this->filter_through;
-			Jelly::builder($this->through['model'])->$method($result);
-		}
-
 		if ($as_array)
 		{
 			$result = $result
@@ -111,6 +104,5 @@ class Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 
 		return $result;
 	}
-
-
+	
 }

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Field_Filterable_HasMany extends Jelly_Field_HasMany
+class Jelly_Field_Filterable_HasMany extends Jelly_Field_HasMany
 {
 
 	/**
@@ -45,7 +45,7 @@ class Field_Filterable_HasMany extends Jelly_Field_HasMany
 		
 		return $query;
 	}
-
+	
 	/**
 	 * Implementation of Jelly_Field_Behavior_Haveable
 	 *
@@ -58,7 +58,7 @@ class Field_Filterable_HasMany extends Jelly_Field_HasMany
 		$query = Jelly::select($this->foreign['model'])
 			->where($this->foreign['column'], '=', $model->id())
 			->where(':primary_key', 'IN', $ids);
-
+	
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;

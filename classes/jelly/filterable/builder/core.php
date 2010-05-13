@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Jelly_Filterable_Builder extends Jelly_Builder_Core
+class Jelly_Filterable_Builder_Core extends Jelly_Builder_Core
 {
 
 	/**
@@ -89,4 +89,20 @@ class Jelly_Filterable_Builder extends Jelly_Builder_Core
 		}
 	}
 
+	public function includeCriteria(Jelly_Builder $criteria)
+	{
+		foreach ($criteria->_where as $condition) {
+			$this->_where[] = $condition;
+		};
+		
+		return $this;
+	}
+	
+	public function table_alias($value = NULL)
+	{
+		// TODO do something with this.
+		$this->_table($value);
+		
+		return $this;
+	}
 }
