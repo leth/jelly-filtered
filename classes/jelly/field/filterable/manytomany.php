@@ -94,6 +94,22 @@ class Jelly_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 		$result = Jelly::select($this->through['model'])
 				->select($this->through['columns'][1])
 				->where($this->through['columns'][0], '=', $model->id());
+		
+		if ($this->filter !== FALSE)
+		{
+			$method = $this->filter;
+			// TODO FIXME joined table naming doesn't work here.
+			$result->join($this->foreign['model'])
+				->on($this->through['model'].'.'.$this->through['columns'][1], '=', $this->foreign['model'].'.'.$this->foreign['column']);
+
+			$result->includeCriteria(Jelly::select($this->foreign['model'])->table_alias($this->foreign['model'])->$method());
+		}
+		
+		if ($this->filter_through !== FALSE)
+		{
+			$method = $this->filter_through;
+			$result->$method();
+		}
 
 		if ($as_array)
 		{
