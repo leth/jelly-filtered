@@ -31,91 +31,44 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 	 * @var string | FALSE
 	 */
 	public $filter = FALSE;
-
-	/**
-	 * Returns a pre-built Jelly model ready to be loaded
-	 *
-	 * @param   Jelly_Model  $model
-	 * @param   mixed        $value
-	 * @param   boolean      $loaded
-	 * @return  void
-	 */
-	public function get($model, $value)
-	{
-		// If the value hasn't changed, we need to pull from the database
-		if ($model->changed($this->name))
-		{
-			$query = Jelly::select($this->foreign['model'])
-					->where($this->foreign['column'], 'IN', $value);
-			
-			if ($this->filter !== FALSE)
-			{
-				$method = $this->filter;
-				$query->$method();
-			}
-			
-			return $query;
-		}
-
-		$join_col1 = $this->through['model'].'.'.$this->through['columns'][1];
-		$join_col2 = $this->foreign['model'].'.'.$this->foreign['column'];
-		$where_col = $this->through['model'].'.'.$this->through['columns'][0];
-
-		$query = Jelly::select($this->foreign['model'])
-					->join($this->through['model'])
-					->on($join_col1, '=', $join_col2)
-					->where($where_col, '=', $model->id());
-		
-		if ($this->filter !== FALSE)
-		{
-			$method = $this->filter;
-			$query->$method();
-		}
-		
-		if ($this->filter_through !== FALSE)
-		{
-			$method = $this->filter_through;
-			$query->includeCriteria(Jelly::select($this->through['model'])->table_alias($this->through['model'])->$method());
-		}
-
-		return $query;
-	}
 	
 	/**
 	 * Returns either an array or unexecuted query to find
 	 * which columns the model is "in" in the join table
 	 *
-	 * @param   Jelly    $model
+	 * @param   Jelly_Model    $model
 	 * @param   boolean  $as_array
 	 * @return  mixed
 	 */
 	protected function _in($model, $as_array = FALSE)
 	{
-		$result = Jelly::select($this->through['model'])
-				->select($this->through['columns'][1])
-				->where($this->through['columns'][0], '=', $model->id());
+		$result = parent::_in($model, FALSE);
 		
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;
-			// TODO FIXME joined table naming doesn't work here.
-			$result->join($this->foreign['model'])
-				->on($this->through['model'].'.'.$this->through['columns'][1], '=', $this->foreign['model'].'.'.$this->foreign['column']);
+			$criteria = Jelly::query($this->foreign['model'])
+				->$method();
 
-			$result->includeCriteria(Jelly::select($this->foreign['model'])->table_alias($this->foreign['model'])->$method());
+			$alias = $this->name;
+			$result->join(array($this->foreign['model'], $alias), 'LEFT')
+			       ->on($alias.'.'. Jelly::meta($this->foreign['model'])->primary_key(), '=', $this->through['fields'][1])
+			       ->includeCriteria($criteria, $alias);
 		}
-		
+
 		if ($this->filter_through !== FALSE)
 		{
 			$method = $this->filter_through;
-			$result->$method();
+			$criteria = Jelly::query($this->through['model'])
+				->$method();
+
+			$result->includeCriteria($criteria);
 		}
 
 		if ($as_array)
 		{
-			$result = $result
-						->execute(Jelly::meta($model)->db())
-						->as_array(NULL, $this->through['columns'][1]);
+			$result = $result->select($model->meta()->db())
+			                 ->as_array(NULL, 'in');
 		}
 
 		return $result;

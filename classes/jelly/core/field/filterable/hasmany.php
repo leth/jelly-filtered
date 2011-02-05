@@ -24,18 +24,7 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 	 */
 	public function get($model, $value)
 	{
-		if ($model->changed($this->name))
-		{
-			// Return a real object
-			$query = Jelly::select($this->foreign['model'])
-					->where(':primary_key', 'IN', $value);
-			
-		}
-		else
-		{
-			$query = Jelly::select($this->foreign['model'])
-					->where($this->foreign['column'], '=', $model->id());
-		}
+		$query = parent::get($model, $value);
 		
 		if ($this->filter !== FALSE)
 		{
@@ -47,18 +36,18 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 	}
 	
 	/**
-	 * Implementation of Jelly_Field_Behavior_Haveable
+	 * Implementation of Jelly_Field_Supports_Has.
 	 *
-	 * @param   Jelly  $model
-	 * @param   array  $ids
-	 * @return  void
+	 * @param   Jelly_Model  $model
+	 * @param   mixed        $models
+	 * @return  boolean
 	 */
-	public function has($model, $ids)
+	public function has($model, $models)
 	{
-		$query = Jelly::select($this->foreign['model'])
-			->where($this->foreign['column'], '=', $model->id())
-			->where(':primary_key', 'IN', $ids);
-	
+		$query = Jelly::query($this->foreign['model'])
+			->where($this->foreign['model'].'.'.$this->foreign['field'], '=', $model->id())
+			->where($this->foreign['model'].'.'.':primary_key', 'IN', $this->_ids($models));
+		
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;
@@ -67,5 +56,4 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 		
 		return (bool) $query->count();
 	}
-
 }
