@@ -17,7 +17,7 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 	 * If the intermediary table has no model, setting this option will cause an exception to be thrown.
 	 *
 	 * False if no filter is set.
-	 * 
+	 *
 	 * @var string
 	 */
 	public $filter_through = FALSE;
@@ -27,11 +27,11 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 	 * which specifies some restriction on the relationship.
 	 *
 	 * False if no filter is set.
-	 * 
+	 *
 	 * @var string | FALSE
 	 */
 	public $filter = FALSE;
-	
+
 	/**
 	 * Returns either an array or unexecuted query to find
 	 * which columns the model is "in" in the join table
@@ -43,7 +43,7 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 	protected function _in($model, $as_array = FALSE)
 	{
 		$result = parent::_in($model, FALSE);
-		
+
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;
@@ -73,5 +73,5 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 
 		return $result;
 	}
-	
+
 }

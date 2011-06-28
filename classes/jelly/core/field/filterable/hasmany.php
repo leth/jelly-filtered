@@ -8,7 +8,7 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 	 * which specifies some restriction on the relationship.
 	 *
 	 * False if no filter is set.
-	 * 
+	 *
 	 * @var string | FALSE
 	 */
 	public $filter = FALSE;
@@ -25,16 +25,16 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 	public function get($model, $value)
 	{
 		$query = parent::get($model, $value);
-		
+
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;
 			$query->$method();
 		}
-		
+
 		return $query;
 	}
-	
+
 	/**
 	 * Implementation of Jelly_Field_Supports_Has.
 	 *
@@ -47,13 +47,13 @@ class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 		$query = Jelly::query($this->foreign['model'])
 			->where($this->foreign['model'].'.'.$this->foreign['field'], '=', $model->id())
 			->where($this->foreign['model'].'.'.':primary_key', 'IN', $this->_ids($models));
-		
+
 		if ($this->filter !== FALSE)
 		{
 			$method = $this->filter;
 			$query->$method();
 		}
-		
+
 		return (bool) $query->count();
 	}
 }
