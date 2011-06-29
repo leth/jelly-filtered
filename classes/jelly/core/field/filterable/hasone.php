@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-abstract class Jelly_Core_Field_Filterable_HasOne extends Jelly_Field implements Jelly_Field_Supports_With {
+abstract class Jelly_Core_Field_Filterable_HasOne extends Jelly_Field implements Jelly_Field_Supports_With
 {
 	/**
 	 * @var  boolean  Ffalse, since this field does not map directly to a column
@@ -109,7 +109,7 @@ abstract class Jelly_Core_Field_Filterable_HasOne extends Jelly_Field implements
 	 */
 	public function get($model, $value)
 	{
-		$query= Jelly::query($this->foreign['model'])
+		$query= Jelly::query($this->foreign['model']);
 
 		if ($model->changed($this->name))
 		{

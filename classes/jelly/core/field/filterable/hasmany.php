@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
+abstract class Jelly_Core_Field_Filterable_HasMany extends Jelly_Field_HasMany
 {
 
 	/**

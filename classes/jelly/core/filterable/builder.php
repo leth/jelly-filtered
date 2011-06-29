@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-class Jelly_Core_Filterable_Builder extends Jelly_Core_Builder
+abstract class Jelly_Core_Filterable_Builder extends Jelly_Core_Builder
 {
 	public function include_criteria(Jelly_Filterable_Builder $criteria, $alias = NULL)
 	{
