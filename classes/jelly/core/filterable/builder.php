@@ -2,7 +2,7 @@
 
 class Jelly_Core_Filterable_Builder extends Jelly_Core_Builder
 {
-	public function includeCriteria(Jelly_Filterable_Builder $criteria, $alias = NULL)
+	public function include_criteria(Jelly_Filterable_Builder $criteria, $alias = NULL)
 	{
 		foreach ($criteria->_where as $condition) {
 			if ($alias !== NULL)

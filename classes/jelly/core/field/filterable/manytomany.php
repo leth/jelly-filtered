@@ -52,8 +52,8 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 
 			$alias = $this->name;
 			$result->join(array($this->foreign['model'], $alias), 'LEFT')
-			       ->on($alias.'.'. Jelly::meta($this->foreign['model'])->primary_key(), '=', $this->through['fields'][1])
-			       ->includeCriteria($criteria, $alias);
+			       ->on($alias.'.'.Jelly::meta($this->foreign['model'])->primary_key(), '=', $this->through['fields'][1])
+			       ->include_criteria($criteria, $alias);
 		}
 
 		if ($this->filter_through !== FALSE)
@@ -62,7 +62,7 @@ class Jelly_Core_Field_Filterable_ManyToMany extends Jelly_Field_ManyToMany
 			$criteria = Jelly::query($this->through['model'])
 				->$method();
 
-			$result->includeCriteria($criteria);
+			$result->include_criteria($criteria);
 		}
 
 		if ($as_array)

@@ -148,7 +148,7 @@ abstract class Jelly_Core_Field_Filterable_HasOne extends Jelly_Field implements
 			$criteria = Jelly::query($this->foreign['model'])
 				->$method();
 
-			$builder->includeCriteria($criteria, ':'.$this->name);
+			$builder->include_criteria($criteria, ':'.$this->name);
 		}
 	}
 

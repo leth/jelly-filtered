@@ -41,17 +41,17 @@ class Jelly_Core_Field_Filterable_HasOneThrough extends Jelly_Field_HasOneThroug
 		if ( ! empty($filter))
 		{
 			if ( ! ($this->foreign['model'] instanceof Jelly_Model))
-				throw new Kohana_Exception('Error in '.$model.'.'. $this->name.'. For filtering on the foreign model, the foreign model must be an instance of Jelly_Model.');
-			elseif( ! method_exists(Jelly::builder($this->foreign['model']), $filter))
-				throw new Kohana_Exception('Error in '.$model.'.'. $this->name.'. For filtering on the foreign model, the foreign model must have a builder with the method \''.$filter .'\'');
+				throw new Kohana_Exception('Error in '.$model.'.'.$this->name.'. For filtering on the foreign model, the foreign model must be an instance of Jelly_Model.');
+			elseif ( ! method_exists(Jelly::builder($this->foreign['model']), $filter))
+				throw new Kohana_Exception('Error in '.$model.'.'.$this->name.'. For filtering on the foreign model, the foreign model must have a builder with the method \''.$filter.'\'');
 		}
 
 		if ( ! empty($filter_through))
 		{
 			if ( ! ($this->through['model'] instanceof Jelly_Model))
-				throw new Kohana_Exception('Error in '.$model.'.'. $this->name.'. For filtering on the foreign model, the foreign model must be an instance of Jelly_Model.');
-			elseif( ! method_exists(Jelly::builder($this->through['model']), $through_filter))
-				throw new Kohana_Exception('Error in '.$model.'.'. $this->name.'. For filtering on the foreign model, the foreign model must have a builder with the method \''.$through_filter .'\'');
+				throw new Kohana_Exception('Error in '.$model.'.'.$this->name.'. For filtering on the foreign model, the foreign model must be an instance of Jelly_Model.');
+			elseif ( ! method_exists(Jelly::builder($this->through['model']), $through_filter))
+				throw new Kohana_Exception('Error in '.$model.'.'.$this->name.'. For filtering on the foreign model, the foreign model must have a builder with the method \''.$through_filter.'\'');
 		}
 	}
 
@@ -86,7 +86,7 @@ class Jelly_Core_Field_Filterable_HasOneThrough extends Jelly_Field_HasOneThroug
 			$criteria = Jelly::query($this->through['model'])
 				->$method();
 
-			$query->includeCriteria($criteria);
+			$query->include_criteria($criteria);
 		}
 
 		return $query;
@@ -112,7 +112,7 @@ class Jelly_Core_Field_Filterable_HasOneThrough extends Jelly_Field_HasOneThroug
 			$criteria = Jelly::query($this->foreign['model'])
 				->$method();
 
-			$builder->includeCriteria($criteria, $this->foreign['alias']);
+			$builder->include_criteria($criteria, $this->foreign['alias']);
 		}
 
 		if ($this->filter_through !== FALSE)
@@ -121,7 +121,7 @@ class Jelly_Core_Field_Filterable_HasOneThrough extends Jelly_Field_HasOneThroug
 			$criteria = Jelly::query($this->through['model'])
 				->$method();
 
-			$builder->includeCriteria($criteria, $this->through['alias']);
+			$builder->include_criteria($criteria, $this->through['alias']);
 		}
 	}
 }
